@@ -10,19 +10,6 @@ class Doctor(AbstractUser):
     """
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
-    # Experience level choices
-    EXPERIENCE_JUNIOR = 'junior'
-    EXPERIENCE_SENIOR = 'senior'
-    EXPERIENCE_CHOICES = {
-        EXPERIENCE_JUNIOR: 'Junior Doctor',
-        EXPERIENCE_SENIOR: 'Senior Doctor',
-    }
-
-    experience_level = models.CharField(
-        max_length=20,
-        choices=EXPERIENCE_CHOICES,
-        default=EXPERIENCE_JUNIOR,
-    )
     phone = models.CharField(max_length=20, blank=True)
     specialties = models.ManyToManyField(
         'Specialty',
@@ -37,16 +24,10 @@ class Doctor(AbstractUser):
         ordering = ['last_name', 'first_name']
         indexes = [
             models.Index(fields=['active']),
-            models.Index(fields=['experience_level']),
         ]
 
     def __str__(self):
         return f"Dr. {self.get_full_name()}" if self.get_full_name() else self.username
-
-    @property
-    def is_senior(self):
-        """Helper property to check if doctor is senior."""
-        return self.experience_level == self.EXPERIENCE_SENIOR
 
 
 class Specialty(models.Model):
